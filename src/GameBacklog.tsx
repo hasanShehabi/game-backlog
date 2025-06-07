@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 //
 import {
   Input,
@@ -25,6 +24,7 @@ import {
   updateDoc,
   onSnapshot
 } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const { Option } = Select;
 const { Title } = Typography;
