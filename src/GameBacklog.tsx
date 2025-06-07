@@ -36,11 +36,12 @@ type Game = {
 };
 
 const statusOptions = ['Not Started', 'Playing', 'Completed', 'Dropped'];
-const placeholder = 'https://via.placeholder.com/160x90?text=No+Image';
+const placeholder = 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png';
 
 export default function GameBacklog() {
   const [games, setGames] = useState<Game[]>([]);
   const [title, setTitle] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [status, setStatus] = useState(statusOptions[0]);
   const [filterStatus, setFilterStatus] = useState('');
   const [groupByStatus, setGroupByStatus] = useState(false);
@@ -48,6 +49,7 @@ export default function GameBacklog() {
   const [editGame, setEditGame] = useState<Game | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editStatus, setEditStatus] = useState('');
+  const [editImage, setEditImage] = useState('');
 
   const gamesRef = collection(db, 'games');
 
@@ -66,12 +68,13 @@ export default function GameBacklog() {
     const newGame = {
       title,
       status,
-      image: placeholder,
+      image: imageUrl || placeholder,
     };
 
     try {
       await addDoc(gamesRef, newGame);
       setTitle('');
+      setImageUrl('');
       setStatus(statusOptions[0]);
     } catch (error) {
       console.error('Error adding game:', error);
@@ -90,6 +93,7 @@ export default function GameBacklog() {
     setEditGame(game);
     setEditTitle(game.title);
     setEditStatus(game.status);
+    setEditImage(game.image);
     setEditModal(true);
   };
 
@@ -98,7 +102,8 @@ export default function GameBacklog() {
     try {
       await updateDoc(doc(db, 'games', editGame.id), {
         title: editTitle,
-        status: editStatus
+        status: editStatus,
+        image: editImage || placeholder
       });
       setEditModal(false);
     } catch (error) {
@@ -149,12 +154,17 @@ export default function GameBacklog() {
 
         <Form layout="vertical" onFinish={addGame}>
           <Row gutter={[16, 16]}>
-            <Col xs={24} md={10}>
+            <Col xs={24} md={8}>
               <Form.Item label="Game Title">
                 <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter game name" />
               </Form.Item>
             </Col>
             <Col xs={24} md={8}>
+              <Form.Item label="Image URL">
+                <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Optional image URL" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={6}>
               <Form.Item label="Status">
                 <Select value={status} onChange={setStatus}>
                   {statusOptions.map((s) => (
@@ -165,10 +175,10 @@ export default function GameBacklog() {
                 </Select>
               </Form.Item>
             </Col>
-            <Col xs={24} md={6}>
+            <Col xs={24} md={2}>
               <Form.Item label=" ">
                 <Button type="primary" htmlType="submit" block>
-                  Add Game
+                  Add
                 </Button>
               </Form.Item>
             </Col>
@@ -272,6 +282,9 @@ export default function GameBacklog() {
                   </Option>
                 ))}
               </Select>
+            </Form.Item>
+            <Form.Item label="Image URL">
+              <Input value={editImage} onChange={(e) => setEditImage(e.target.value)} />
             </Form.Item>
           </Form>
         </Modal>
