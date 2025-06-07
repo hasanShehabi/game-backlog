@@ -1,4 +1,3 @@
-// GameBacklog.tsx
 import {
   Input,
   Select,
@@ -11,6 +10,7 @@ import {
   Dropdown,
   Menu,
   Modal,
+  Space
 } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -117,12 +117,27 @@ export default function GameBacklog() {
       })).filter((group) => group.games.length > 0)
     : [{ status: '', games: filteredGames }];
 
+  const getCardBackground = (status: string) => {
+    switch (status) {
+      case 'Playing':
+        return '#cce4ff';
+      case 'Completed':
+        return '#ccefd4';
+      case 'Dropped':
+        return '#ffd4d4';
+      case 'Not Started':
+      default:
+        return '#f0f0f0';
+    }
+  };
+
   return (
     <div
       style={{
         minHeight: '100vh',
         background: '#f5f5f5',
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         padding: 16,
       }}
@@ -134,12 +149,12 @@ export default function GameBacklog() {
 
         <Form layout="vertical" onFinish={addGame}>
           <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} md={10}>
+            <Col xs={24} md={10}>
               <Form.Item label="Game Title">
                 <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter game name" />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={8}>
+            <Col xs={24} md={8}>
               <Form.Item label="Status">
                 <Select value={status} onChange={setStatus}>
                   {statusOptions.map((s) => (
@@ -161,11 +176,11 @@ export default function GameBacklog() {
         </Form>
 
         <Row gutter={[16, 16]} justify="end" style={{ marginBottom: 24 }}>
-          <Col xs={12} sm={6}>
+          <Col>
             <Select
               value={filterStatus || 'all'}
               onChange={(val) => setFilterStatus(val === 'all' ? '' : val)}
-              style={{ width: '100%' }}
+              style={{ width: 180 }}
             >
               <Option value="all">All Statuses</Option>
               {statusOptions.map((s) => (
@@ -175,11 +190,11 @@ export default function GameBacklog() {
               ))}
             </Select>
           </Col>
-          <Col xs={12} sm={6}>
+          <Col>
             <Select
               value={groupByStatus ? 'status' : 'none'}
               onChange={(val) => setGroupByStatus(val === 'status')}
-              style={{ width: '100%' }}
+              style={{ width: 160 }}
             >
               <Option value="none">No Grouping</Option>
               <Option value="status">Group by Status</Option>
@@ -191,50 +206,49 @@ export default function GameBacklog() {
           <div key={status}>
             {groupByStatus && <Title level={4} style={{ margin: '24px 0 12px' }}>{status}</Title>}
             <AnimatePresence>
-              <Row gutter={[16, 16]}>
+              <Space direction="vertical" size="large" style={{ width: '100%' }}>
                 {games.map((game) => (
-                  <Col xs={24} sm={12} key={game.id}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Card hoverable style={{ borderRadius: 12 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-                          <img
-                            src={game.image || placeholder}
-                            alt={game.title}
-                            onError={(e) => ((e.target as HTMLImageElement).src = placeholder)}
-                            style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }}
-                          />
-                          <div style={{ flexGrow: 1 }}>
-                            <Typography.Title level={5} style={{ margin: 0 }}>
-                              {game.title}
-                            </Typography.Title>
-                            <span style={{ color: '#666' }}>{game.status}</span>
-                          </div>
-                          <Dropdown
-                            overlay={
-                              <Menu>
-                                <Menu.Item key="edit" onClick={() => openEdit(game)}>
-                                  Edit
-                                </Menu.Item>
-                                <Menu.Item key="delete" danger onClick={() => deleteGame(game.id)}>
-                                  Delete
-                                </Menu.Item>
-                              </Menu>
-                            }
-                            trigger={['click']}
-                          >
-                            <Button type="text" icon={<MoreOutlined />} />
-                          </Dropdown>
+                  <motion.div
+                    key={game.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Card hoverable style={{ borderRadius: 12, background: getCardBackground(game.status) }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                        <img
+                          src={game.image || placeholder}
+                          alt={game.title}
+                          onError={(e) => ((e.target as HTMLImageElement).src = placeholder)}
+                          style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }}
+                        />
+                        <div style={{ flexGrow: 1 }}>
+                          <Typography.Title level={5} style={{ margin: 0 }}>
+                            {game.title}
+                          </Typography.Title>
+                          <span style={{ color: '#555' }}>{game.status}</span>
                         </div>
-                      </Card>
-                    </motion.div>
-                  </Col>
+                        <Dropdown
+                          overlay={
+                            <Menu>
+                              <Menu.Item key="edit" onClick={() => openEdit(game)}>
+                                Edit
+                              </Menu.Item>
+                              <Menu.Item key="delete" danger onClick={() => deleteGame(game.id)}>
+                                Delete
+                              </Menu.Item>
+                            </Menu>
+                          }
+                          trigger={['click']}
+                        >
+                          <Button type="text" icon={<MoreOutlined />} />
+                        </Dropdown>
+                      </div>
+                    </Card>
+                  </motion.div>
                 ))}
-              </Row>
+              </Space>
             </AnimatePresence>
           </div>
         ))}
