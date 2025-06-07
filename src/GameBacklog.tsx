@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+//
 import {
   Input,
   Select,
@@ -15,11 +16,10 @@ import {
 } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { db } from './firebase'; // Update path as needed
+import { db } from './firebase';
 import {
   collection,
   addDoc,
-  getDocs,
   deleteDoc,
   doc,
   updateDoc,
