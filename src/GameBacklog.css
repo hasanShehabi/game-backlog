@@ -1,0 +1,36 @@
+/* src/GameBacklog.css */
+  
+  .ant-select-item-option-content {
+    color: inherit;
+  }
+  
+
+  .row-playing {
+    background-color: #bae7ff !important;   /* Brighter blue */
+  }
+  
+  .row-completed {
+    background-color: #d9f7be !important;   /* Fresher green */
+  }
+  
+  .row-dropped {
+    background-color: #ffccc7 !important;   /* Softer red */
+  }
+  
+  .row-not-started {
+    background-color: #f5f5f5 !important;   /* Neutral light gray */
+  }
+  
+  
+  
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+
+  .ant-card:hover {
+    transform: translateY(-4px);
+    transition: transform 0.2s ease;
+  }
+  
