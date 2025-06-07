@@ -1,4 +1,3 @@
-import React from 'react';
 import GameBacklog from './GameBacklog';
 
 function App() {
